@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-htmx-todo
+  labels:
+    app: fastapi-htmx-todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-htmx-todo
+  template:
+    metadata:
+      labels:
+        app: fastapi-htmx-todo
+    spec:
+      containers:
+      - name: fastapi-htmx-todo
+        image: fastapi-htmx-todo:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 500m
+        readinessProbe:
+          httpGet: &id001
+            path: /
+            port: 8000
+          periodSeconds: 10
+          failureThreshold: 3
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet: *id001
+          periodSeconds: 10
+          failureThreshold: 3
+          initialDelaySeconds: 30
